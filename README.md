@@ -1,114 +1,276 @@
-# Markdown 完全示例
+# Matrix Class
 
-这是一个展示 Markdown 常用语法的示例文件。
+## Two simple examples
 
-## 目录 (由某些渲染器自动生成)
-- [标题](#标题)
-- [段落与换行](#段落与换行)
-- [文本强调](#文本强调)
-- [列表](#列表)
-- [链接与图片](#链接与图片)
-- [代码](#代码)
-- [表格](#表格)
-- [引用](#引用)
-- [水平分割线](#水平分割线)
-- [HTML](#html)
-- [扩展语法](#扩展语法)
+```c
+#include <iostream>
+#include <Eigen/Dense>
 
----
+using Eigen::Matrix3d;
+using Eigen::Vector3d;
 
-## 标题
+int main() {
+  Matrix3d m = Matrix3d::Random();
+  m = (m + Matrix3d::Constant(1.2)) * 50;
+  std::cout << "m =" << std::endl << m << std::endl;
+  Vector3d v(1, 2, 3);
 
-# H1 - 一级标题
-## H2 - 二级标题
-### H3 - 三级标题
-#### H4 - 四级标题
-##### H5 - 五级标题
-###### H6 - 六级标题
+  std::cout << "m * v =" << std::endl << m * v << std::endl;
+}
+```
 
-或者使用另一种语法（只适用于 H1 和 H2）：
-一级标题 Alternative
-====================
 
-二级标题 Alternative
---------------------
+```c
+#include <iostream>
+#include <Eigen/Dense>
 
-## 段落与换行
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 
-这是一个段落。Markdown 中的段落由一个或多个连续的文本行组成，由一个或多个空行分隔。（空行是指看起来是空行的行，只包含空格和制表符的行被视为空行）。
+int main() {
+  MatrixXd m = MatrixXd::Random(3, 3);
+  m = (m + MatrixXd::Constant(3, 3, 1.2)) * 50;
+  std::cout << "m =" << std::endl << m << std::endl;
+  VectorXd v(3);
+  v << 1, 2, 3;
+  std::cout << "m * v =" << std::endl << m * v << std::endl;
+}
+```
+The output is 
+```  
+m =
+94.8 76.7 82.3
+70.3 36.5 28.4
+39.3  106 61.2
+m * v =
+495
+228
+436
+```
 
-这是另一个段落。如果你想在段落内进行**换行**（`<br>`），你可以在行尾加上两个或以上的空格，然后按回车。  
-就像这样，这行已经被强制换行了。
 
-## 文本强调
 
-**这是加粗的文字** 或者 __这也是加粗的文字__
 
-*这是倾斜的文字* 或者 _这也是倾斜的文字_
+## Matrix and Vector Type
 
-***这是加粗并倾斜的文字*** 或者 ___这也是加粗并倾斜的文字___
 
-~~这是被删除线划掉的文字~~
+```c
+Matrix<typename Scalar, 
+       int RowsAtCompileTime, 
+       int ColsAtCompileTime,
+       int Options = 0, 
+       int MaxRowsAtCompileTime = RowsAtCompileTime, 
+       int MaxColsAtCompileTime = ColsAtCompileTime>
+```
 
-这是`行内代码`的示例。
 
-## 列表
+Eigen库中预先定义好了一些类型，可以直接使用
+```c
+- Matrix<double, 4, 5> a;
 
-### 无序列表
+- typedef Matrix<float, 4, 4> Matrix4f;
+- typedef Matrix<double, 3, 1> Vector3d;
+- typedef Matrix<double, Dynamic, Dynamic> MatrixXd;
+- typedef Matrix<int, Dynamic, 1> VectorXi;
+```
+其中
+- 'i' for integer
+- 'd' for double
+- 'f' for float
+- 'c' for complex
 
-- 项目一
-- 项目二
-  - 嵌套项目二 A
-  - 嵌套项目二 B
-    - 三级嵌套项目
-- 项目三
 
-你也可以使用 `*` 或 `+`:
-* 星号项目
-+ 加号项目
 
-### 有序列表
+## Declaration and Assignment
+```c
+Matrix3f a;
+MatrixXf b;
 
-1. 第一项
-2. 第二项
-3. 第三项
-   1. 嵌套第一项
-   2. 嵌套第二项
-4. 第四项
+MatrixXf a(10,15);
+VectorXf b(30);
 
-### 任务列表 (扩展语法)
+Matrix3f a(3,3);
+Matrix3f a(4,4); // illegal
 
-- [x] 已完成的任务
-- [ ] 未完成的任务一
-- [ ] 未完成的任务二
+Vector2d a(5.0, 6.0);
+Vector3d b(5.0, 6.0, 7.0);
+Vector4d c(5.0, 6.0, 7.0, 8.0);
 
-## 链接与图片
+Matrix3f m;
+m << 1, 2, 3,
+     4, 5, 6, 
+     7, 8, 9; // comma initialization
+```
 
-### 链接
 
-这是一个行内式链接 [Markdown 官方语法说明](https://daringfireball.net/projects/markdown/syntax)。
+## Matrix Size and Resize
+```c
+#include <iostream>
+#include <Eigen/Dense>
 
-这是一个参考式链接 [GitHub][github-url]。参考式链接在长文档中非常有用，可以让源文件更易读。
+int main() {
+  Eigen::MatrixXd m(2, 5);
+  m.resize(4, 3);
+  std::cout << "The matrix m is of size " << m.rows() << "x" << m.cols() << std::endl;
+  std::cout << "It has " << m.size() << " coefficients" << std::endl;
+  Eigen::VectorXd v(2);
+  v.resize(5);
+  std::cout << "The vector v is of size " << v.size() << std::endl;
+  std::cout << "As a matrix, v is of size " << v.rows() << "x" << v.cols() << std::endl;
+}
+```
+The output is
+```
+The matrix m is of size 4x3
+It has 12 coefficients
+The vector v is of size 5
+As a matrix, v is of size 5x1
+```
 
-[github-url]: https://github.com
 
-这是一个直接展示的链接：<https://www.example.com>
+```c
+#include <iostream>
+#include <Eigen/Dense>
 
-### 图片
+int main() {
+  Eigen::Matrix4d m;
+  m.resize(4, 4);  // legal - no operation
+  m.resize(3, 4);  // illegal
+  std::cout << "The matrix m is of size " << m.rows() << "x" << m.cols() << std::endl;
+}
+```
 
-![这是图片的替代文本(Alt Text)](https://example.com/image.jpg "这是可选的标题文本（悬停时显示）")
 
-图片也支持参考式语法：
-![替代文本][logo]
+## Fixed vs. Dynamic size
+- Use fixed sizes for very small sizes where you can, and use dynamic sizes for larger sizes or where you have to. 
+- For small sizes, especially for sizes smaller than (roughly) 16, using fixed sizes is hugely beneficial to performance, as it allows Eigen to avoid dynamic memory allocation and to unroll loops.
+  - 当循环次数已知且较小时，编译器会将循环体直接展开为顺序指令，消除循环控制（如计数器增减、条件跳转）的开销。
+  - 对于固定大小的矩阵（如 Matrix4f），Eigen会在编译时确定所有操作的范围，生成完全展开的代码。例如，两个4x4矩阵相加可能直接编译为16条标量加法指令，而非循环。
+- for large enough sizes, say for sizes greater than (roughly) 32, the performance benefit of using fixed sizes becomes negligible. Worse, trying to create a very large matrix using fixed sizes inside a function could result in a stack overflow, since Eigen will try to allocate the array automatically as a local variable, and this is normally done on the stack.
 
-[logo]: https://example.com/logo.png "Logo标题"
 
-## 代码
 
-### 行内代码
+# Matrix and vector arithmetic
+```c
+#include <iostream>
+#include <Eigen/Dense>
 
-使用 `printf()` 函数可以打印内容。
+int main() {
+  Eigen::Matrix2d a;
+  a << 1, 2, 3, 4;
+  Eigen::MatrixXd b(2, 2);
+  b << 2, 3, 1, 4;
+  Eigen::Vector2d c(1., 2.);
+  std::cout << "a + b =\n" << a + b << std::endl; // Addition
+  std::cout << "a - b =\n" << a - b << std::endl; // Subtraction
+  std::cout << "a * 2.5 =\n" << a * 2.5 << std::endl; // Scalar multiplication
 
-### 代码块
+  MatrixXcf a = MatrixXcf::Random(2, 2);
+  cout << "Here is the matrix a\n" << a << endl;
+  cout << "Here is the matrix a^T\n" << a.transpose() << endl; // Transposition
+  cout << "Here is the conjugate of a\n" << a.conjugate() << endl; // Conjugation
+  cout << "Here is the matrix a^*\n" << a.adjoint() << endl;
 
-使用三个反引号（```）来创建代码块，并可以指定语言以实现语法高亮。
+  cout << "mul of a and b\n" << a * b << endl; // Matrix multiplication
+  cout << "mul of a and c\n" << a * c << endl; // Matrix-vector multiplication
+
+  Eigen::Vector3d v(1, 2, 3);
+  Eigen::Vector3d w(0, 1, 2); 
+  std::cout << "Dot product: " << v.dot(w) << std::endl; // Inner product
+  double dp = v.adjoint() * w;  // automatic conversion of the inner product to a scalar
+  std::cout << "Dot product via a matrix product: " << dp << std::endl;
+  std::cout << "Cross product:\n" << v.cross(w) << std::endl; // cross product
+}
+```
+
+
+- If you do b = a.transpose(), then the transpose is evaluated at the same time as the result is written into b. However, there is a complication here. 
+- If you do a = a.transpose(), then Eigen starts writing the result into a before the evaluation of the transpose is finished. 
+```c
+a = a.transpose() // Don't do this
+a = a.transposeInPlace() // use this
+```
+
+
+
+# Linear algebra and decompositions
+## Basic linear solving
+```c
+#include <iostream>
+#include <Eigen/Dense>
+
+int main() {
+  Eigen::Matrix3f A;
+  Eigen::Vector3f b;
+  A << 1, 2, 3, 4, 5, 6, 7, 8, 10;
+  b << 3, 3, 4;
+  Eigen::Vector3f x = A.colPivHouseholderQr().solve(b);
+  std::cout << "The solution is:\n" << x << std::endl;
+}
+```
+- ColPivHouseholderQR is a QR decomposition with column pivoting. It's a good compromise for this tutorial, as it works for all matrices while being quite fast.
+- colPivHouseholderQr() method returns an object of class ColPivHouseholderQR, this line can be replaced by
+```c
+ColPivHouseholderQR<Matrix3f> dec(A);
+Vector3f x = dec.solve(b);
+```
+
+
+![Markdown Logo](/home/wugs/eigen3-learn/algorithm.jpg)
+*decompositions that you can choose from, depending on your matrix, the problem you are trying to solve, and the trade-off you want to make*
+
+
+
+## Computing eigenvalues and eigenvectors
+```c
+#include <iostream>
+#include <Eigen/Dense>
+
+int main() {
+  Eigen::Matrix2f A;
+  A << 1, 2, 2, 3;
+  std::cout << "Here is the matrix A:\n" << A << std::endl;
+  Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eigensolver(A);
+  if (eigensolver.info() != Eigen::Success) abort();
+  std::cout << "The eigenvalues of A are:\n" << eigensolver.eigenvalues() << std::endl;
+  std::cout << "Here's a matrix whose columns are eigenvectors of A \n" << "corresponding to these eigenvalues:\n" << eigensolver.eigenvectors() << std::endl;
+}
+```
+The output is 
+```
+Here is the matrix A:
+1 2
+2 3
+The eigenvalues of A are:
+-0.236
+  4.24
+Here's a matrix whose columns are eigenvectors of A 
+corresponding to these eigenvalues:
+-0.851 -0.526
+ 0.526 -0.851
+ ```
+
+## Inverse and Determinant
+```c 
+#include <iostream>
+#include <Eigen/Dense>
+
+int main() {
+  Eigen::Matrix3f A;
+  A << 1, 2, 1, 2, 1, 0, -1, 1, 2;
+  std::cout << "The determinant of A " << A.determinant() << std::endl;
+  std::cout << "The inverse of A \n" << A.inverse() << std::endl;
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
