@@ -22,7 +22,12 @@ int main(int argc, char **argv) {
 	// m = (m + Matrix3d::Constant(1.2)) * 50;
 	// std::cout << "m =" << std::endl << m << std::endl;
 	// Vector3d v(1, 2, 3);
+	// // Vector3d v;
+	// // v << 1,2,3;
 	// std::cout << "m * v =" << std::endl << m * v << std::endl;
+	// Matrix3d m(1,2,3,4,5,6,7,8,9);
+	// cout << m << endl;
+
 
 
 	// --------------------------------------- Example 2 ----------------------------------------
@@ -42,7 +47,7 @@ int main(int argc, char **argv) {
 	// v.resize(5);
 	// std::cout << "The vector v is of size " << v.size() << std::endl;
 	// std::cout << "As a matrix, v is of size " << v.rows() << "x" << v.cols() << std::endl;
-
+    //
 
 	// -------------------------------------- matrix arithmetic ----------------------------------
 	// Eigen::Matrix2d a;
@@ -72,12 +77,12 @@ int main(int argc, char **argv) {
 	
 
 	// ------------------------------------- linear solve ---------------------------------------
-	Eigen::Matrix3f A;
-	Eigen::Vector3f b;
-	A << 1, 2, 3, 4, 5, 6, 7, 8, 10;
-	b << 3, 3, 4;
-	Eigen::Vector3f x = A.colPivHouseholderQr().solve(b);
-	std::cout << "The solution is:\n" << x << std::endl;
+	// Eigen::Matrix3f A;
+	// Eigen::Vector3f b;
+	// A << 1, 2, 3, 4, 5, 6, 7, 8, 10;
+	// b << 3, 3, 4;
+	// Eigen::Vector3f x = A.colPivHouseholderQr().solve(b);
+	// std::cout << "The solution is:\n" << x << std::endl;
 
 
 
@@ -128,26 +133,60 @@ int main(int argc, char **argv) {
 
 
 	// ----------------------------------- Matrix arithmetic -----------------------------------------
-    /* Eigen::Matrix2d a; */
-    /* a << 1, 2, */
-    /*         3, 4; */
-    /* Eigen::Matrix2d b; */
-    /* b << 2, 3, */
-    /*         1, 4; */
-    /* std::cout << "Matrix addition:\n" << a + b << std::endl; */
-    /* std::cout << "Matrix subtraction:\n" << a - b << std::endl; */
-    /* std::cout << "Element-wise multiplication:\n" << a.array() * b.array() << std::endl; */
-    /* std::cout << "Matrix multiplication:\n" << a * b << std::endl; */
+	// Eigen::Matrix2d a;
+	// a << 1, 2,
+	//         3, 4;
+	// Eigen::Matrix2d b;
+	// b << 2, 3,
+	//         1, 4;
+	// std::cout << "Matrix addition:\n" << a + b << std::endl;
+	// std::cout << "Matrix subtraction:\n" << a - b << std::endl;
+	// std::cout << "Element-wise multiplication:\n" << a.array() * b.array() << std::endl;
+	// std::cout << "a.array:\n" << a.array() << std::endl;
+	// std::cout << "Matrix multiplication:\n" << a * b << std::endl;
+    //
+	// Eigen::Matrix2d mat;
+	// mat << 1, 2,
+	//     3, 4;
+	// std::cout << "Inverse matrix:\n" << mat.inverse() << std::endl;
+	// std::cout << "Determinant: " << mat.determinant() << std::endl;
+	// std::cout << "Trace: " << mat.trace() << std::endl;
 
-    /* Eigen::Matrix2d mat; */
-    /* mat << 1, 2, */
-    /*     3, 4; */
-    /* std::cout << "Inverse matrix:\n" << mat.inverse() << std::endl; */
-    /* std::cout << "Determinant: " << mat.determinant() << std::endl; */
-    /* std::cout << "Trace: " << mat.trace() << std::endl; */
+
+	// -----------------------------------------------------------------------
+	// Eigen::Matrix3f A;
+	// Eigen::Vector3f b;
+	// A << 1, 2, 3, 4, 5, 6, 7, 8, 10;
+	// b << 3, 3, 4;
+	// // Eigen::Vector3f x = A.colPivHouseholderQr().solve(b);
+	// Eigen::Matrix3f x = A.colPivHouseholderQr().matrixQ();
+	// // std::cout << "The solution is:\n" << x << std::endl;
+	// // ColPivHouseholderQR<Matrix3f> dec(A);
+	// cout << "Q " << endl << x << endl;
+	// Eigen::Matrix3f y = A.colPivHouseholderQr().matrixR();
+	// cout << "R " << endl << y << endl;
+	// // cout << "R " << endl << dec.matrixR() << endl;
+
+	Eigen::Matrix3f A;
+	A << 1, 2, 3,
+	  4, 5, 6,
+	  7, 8, 9;
+
+	Eigen::ColPivHouseholderQR<Eigen::Matrix3f> qr(A);
+	// 获取 Q 和 R
+	Eigen::Matrix3f Q = qr.matrixQ(); // type trans
+	Eigen::Matrix3f R = qr.matrixR().triangularView<Eigen::Upper>();
+
+	std::cout << "Q:\n" << Q << "\n\n";
+	std::cout << "R:\n" << R << "\n\n";
+
+	// 验证 Q * R ≈ A * P（P 是列置换）
+	Eigen::Matrix3f AP = A * qr.colsPermutation();
+	std::cout << "Q * R (should ≈ AP):\n" << Q * R << std::endl;
 
 
-	// ---------------------------------------- matrix 
+
+	// ---------------------------------------- linear solver ----------------------------------
     /* Eigen::Matrix3d A; */
     /* A << 1, 2, 3, */
     /*   4, 5, 6, */

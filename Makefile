@@ -4,7 +4,7 @@
 # PETSC_DIR=/opt/petsc-3.23.2
 # PETSC_ARCH=
 # MPI_DIR=/usr/lib/x86_64-linux-gnu/openmpi
-EIGEN_DIR=/usr/include/eigen3
+EIGEN_DIR=/home/wugs/eigen3-learn/eigen3
 
 # include ${PETSC_DIR}/lib/petsc/conf/petscvariables
 # include ${PETSC_DIR}/lib/petsc/conf/variables
